@@ -26,7 +26,7 @@
 
 #if ENABLED (M6_Tool_Change)
 
-static char* T1CODE = (char*) "M280 P1 S0\nG4 S2\nG90\nG1 X 87 F2000\nG1 Z 230 F2000\nG1 Z 245 F500\nG1 X 106 F2000\nG1 Z 10 F2000\nG4 S2\nM400\nM280 P1 S43\nG4 S2";
+static char* T1CODE = (char*) "G28";
 
 #endif //M6 TOOL CHANGE
 
