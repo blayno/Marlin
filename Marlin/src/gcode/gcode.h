@@ -18,7 +18,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  *
- */
+ */ 
 #pragma once
 
 /**
@@ -79,6 +79,7 @@
  * M3   - Turn ON Laser | Spindle (clockwise), set Power | Speed. (Requires SPINDLE_FEATURE or LASER_FEATURE)
  * M4   - Turn ON Laser | Spindle (counter-clockwise), set Power | Speed. (Requires SPINDLE_FEATURE or LASER_FEATURE)
  * M5   - Turn OFF Laser | Spindle. (Requires SPINDLE_FEATURE or LASER_FEATURE)
+ * M6   - GRBL Tool Change Support
  * M7   - Turn mist coolant ON. (Requires COOLANT_CONTROL)
  * M8   - Turn flood coolant ON. (Requires COOLANT_CONTROL)
  * M9   - Turn coolant OFF. (Requires COOLANT_CONTROL)
@@ -289,6 +290,7 @@
  *
  * M871 - Print/reset/clear first layer temperature offset values. (Requires PTC_PROBE, PTC_BED, or PTC_HOTEND)
  * M876 - Handle Prompt Response. (Requires HOST_PROMPT_SUPPORT and not EMERGENCY_PARSER)
+ * M877 - Update gcode for tool positions grbl tool change M6
  * M900 - Get or Set Linear Advance K-factor. (Requires LIN_ADVANCE)
  * M906 - Set or get motor current in milliamps using axis codes XYZE, etc. Report values if no axis codes given. (Requires at least one _DRIVER_TYPE defined as TMC2130/2160/5130/5160/2208/2209/2660)
  * M907 - Set digital trimpot motor current using axis codes. (Requires a board with digital trimpots)
@@ -345,6 +347,7 @@ enum AxisRelative : uint8_t {
     , E_MODE_ABS, E_MODE_REL
   #endif
 };
+
 
 extern const char G28_STR[];
 
@@ -430,6 +433,7 @@ public:
   // Execute G-code in-place, preserving current G-code parameters
   static void process_subcommands_now(FSTR_P fgcode);
   static void process_subcommands_now(char * gcode);
+  
 
   static void home_all_axes(const bool keep_leveling=false) {
     process_subcommands_now(keep_leveling ? FPSTR(G28_STR) : TERN(CAN_SET_LEVELING_AFTER_G28, F("G28L0"), FPSTR(G28_STR)));
@@ -609,6 +613,10 @@ private:
     static void M3_M4(const bool is_M4);
     static void M5();
   #endif
+
+  #if ENABLED (M6_Tool_Change)
+   static void M6(); 
+   #endif
 
   #if ENABLED(COOLANT_MIST)
     static void M7();
@@ -1150,6 +1158,10 @@ private:
     static void M871();
   #endif
 
+  static void M877();
+  static void M877_report(const bool forReplay=true);
+
+
   #if ENABLED(LIN_ADVANCE)
     static void M900();
     static void M900_report(const bool forReplay=true);
@@ -1248,6 +1260,8 @@ private:
   #endif
 
   static void T(const int8_t tool_index);
+  
+ 
 
 };
 

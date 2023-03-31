@@ -492,6 +492,10 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 5: M5(); break;                                      // M5: Turn OFF Laser | Spindle
       #endif
 
+      #if ENABLED (M6_Tool_Change)
+      case 6 : M6(); break;
+      #endif 
+
       #if ENABLED(COOLANT_MIST)
         case 7: M7(); break;                                      // M7: Coolant Mist ON
       #endif
@@ -1049,6 +1053,8 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
         case 869: M869(); break;                                  // M869: Report axis error
       #endif
 
+      case 877: M877(); break; 
+
       #if ENABLED(MAGNETIC_PARKING_EXTRUDER)
         case 951: M951(); break;                                  // M951: Set Magnetic Parking Extruder parameters
       #endif
@@ -1102,6 +1108,8 @@ void GcodeSuite::process_parsed_command(const bool no_ok/*=false*/) {
     break;
 
     case 'T': T(parser.codenum); break;                           // Tn: Tool Change
+
+    
 
     #if ENABLED(MARLIN_DEV_MODE)
       case 'D': D(parser.codenum); break;                         // Dn: Debug codes
@@ -1194,6 +1202,8 @@ void GcodeSuite::process_subcommands_now(char * gcode) {
   parser.parse(saved_cmd);                            // Restore the parser state
 }
 
+
+
 #if ENABLED(HOST_KEEPALIVE_FEATURE)
 
   /**
@@ -1226,5 +1236,7 @@ void GcodeSuite::process_subcommands_now(char * gcode) {
     }
     next_busy_signal_ms = ms + SEC_TO_MS(host_keepalive_interval);
   }
+
+  
 
 #endif // HOST_KEEPALIVE_FEATURE
