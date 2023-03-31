@@ -59,10 +59,10 @@
   }
 
    // Save the new offsets
-  if (ok) T1CODE = i;{
+  if (ok) T1CODE = i;
     SERIAL_ECHOLNPGM_P("M877 Updated",":",T1CODE);
     
-   }
+   
 
 
 
